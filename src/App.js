@@ -1,23 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+//import './App.css';
+import AddTask from './components/AddTask';
+import Header from './components/Header'
+import Tasks from './components/Tasks'
+import {useState, useEffect} from 'react'
+import Footer from './components/Footer'
+
+import About from './components/About'
+
+
 
 function App() {
+  const [showAdd,setShowAdd] = useState(false);
+  
+  const [tasks, setTasks] = useState([]);
+  const toggleReminder = (id) => {
+    setTasks(tasks.map(task=> task.id ===id? {...task, reminder:!task.reminder} : task))
+  }
+  const addTask = (task) => {
+    const id = Math.floor(Math.random()*10000)+1
+    const newTask = {id, ...task}
+    setTasks([...tasks, newTask])
+  }
+  const deleteTask = (id) => {
+    setTasks(tasks.filter((task)=> task.id !==id ))
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          hello im so lost help plss
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React 
-        </a>
-      </header>
+    <div className="Main">
+      <Header showAdd = {showAdd} onAdd={() =>setShowAdd(!showAdd)}/>
+      {showAdd && <AddTask onAdd={addTask}/>}
+      {tasks.length > 0 
+      ? (<Tasks tasks = {tasks} onToggle ={toggleReminder} 
+      onDelete = {deleteTask}/>) 
+      : 'No Posts'}
+      
     </div>
   );
 }
